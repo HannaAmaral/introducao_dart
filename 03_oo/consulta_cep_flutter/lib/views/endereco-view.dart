@@ -1,6 +1,6 @@
+import 'package:consulta_cep_flutter/controllers/endereco-controller.dart';
+import 'package:consulta_cep_flutter/main.dart';
 import 'package:consulta_cep_flutter/models/endereco.dart';
-
-import '../controllers/endereco-controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -12,37 +12,38 @@ class EnderecoView extends StatefulWidget {
 }
 
 class _EnderecoViewState extends State<EnderecoView> {
- 
   final TextEditingController cepController = TextEditingController();
+
   final EnderecoController enderecoController = EnderecoController();
 
   Endereco? endereco;
-  String? mensagemErro;
-  bool carregando = false;
- 
-  Future <void> consultarCep () async{
-    try{
 
-      carregando = true;
-      mensagemErro = null;
-      this.endereco = null;
+  String? mensagemErro;
+
+  bool carregando = false;
+
+  Future<void> consultarCEP() async {
+    try {
+      setState(() {
+        carregando = true;
+        mensagemErro = null;
+        this.endereco = null;
+      });
 
       String cep = enderecoController.validaCEP(cepController.text);
-    
+
       final endereco = await enderecoController.buscarEndereco(cep);
 
       setState(() {
-        this.endereco = endereco; 
+        this.endereco = endereco;
       });
-
-      }
-    catch (e){
+    } catch (e) {
       setState(() {
-        mensagemErro = (e.toString());
+        mensagemErro = e.toString();
         endereco = null;
       });
-    }finally{
-        carregando = false;
+    } finally {
+      carregando = false;
     }
   }
 
@@ -70,49 +71,35 @@ class _EnderecoViewState extends State<EnderecoView> {
             const SizedBox(height: 16),
 
             ElevatedButton(
-              onPressed: () {
-                consultarCep();
-              },
+              onPressed: consultarCEP,
               child: const Text('Consultar'),
             ),
-            if (endereco != null)...[
-              const SizedBox(height: 24,),
-              
-              Text( 
-                'Logradouro: ${endereco!.logradouro}'
-                ),
-                
-              Text( 
-                'Bairro: ${endereco!.bairro}'
-                ),
-                
-              Text( 
-                'Cidade: ${endereco!.localidade}'
-                ),
-                
-              Text( 
-                'UF: ${endereco!.uf}'
-                ),
+
+            if (endereco != null) ...[
+              const SizedBox(height: 24),
+
+              Text('Logradouro: ${endereco!.logradouro}'),
+
+              Text('Bairro: ${endereco!.bairro}'),
+
+              Text('Cidade: ${endereco!.localidade}'),
+
+              Text('UF: ${endereco!.uf}'),
             ],
-            
-        if (mensagemErro != null)...[
 
-          const  SizedBox(height: 24,),
+            if (mensagemErro != null) ...[
+              const SizedBox(height: 24),
 
-          Text(mensagemErro!,
-            style: const TextStyle(color: Colors.red),
-          ),
-        ],
-            if(carregando) ...[
+              Text(mensagemErro!, style: const TextStyle(color: Colors.red)),
+            ],
 
-              const SizedBox(height: 24,),
+            if (carregando) ...[
+              const SizedBox(height: 24),
 
-            const Center(
-                child: CircularProgressIndicator(),
-            )
+              const Center(child: CircularProgressIndicator()),
+            ],
           ],
-          ],
-        )
+        ),
       ),
     );
   }

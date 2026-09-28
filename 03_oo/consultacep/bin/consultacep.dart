@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import 'dart:io';
 
 import 'package:consultacep/consultacep.dart' as consultacep;
@@ -13,3 +14,13 @@ void main(List<String> arguments) async {
 }
 
 
+=======
+import 'package:consultacep/view/endereco-view.dart';
+
+void main(List<String> arguments){
+
+final view = EnderecoView();
+view.iniciar();
+
+}
+>>>>>>> a5da54bbb295fb028a9e2f964b69da255e4e62f1
