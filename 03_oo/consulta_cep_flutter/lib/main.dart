@@ -13,6 +13,14 @@ class ConsultaCepApp extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+  inputDecorationTheme: InputDecorationTheme(
+  floatingLabelStyle: TextStyle(
+    color: Color.fromARGB(255, 255, 140, 238),
+    fontWeight: FontWeight.w600,
+  ),
+),
+),
 
       debugShowCheckedModeBanner: false,
 
