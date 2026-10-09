@@ -1,7 +1,11 @@
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+
 import '../exceptions/api-invalida-exception.dart';
 import '../exceptions/cep-invalido-exception.dart';
 import '../exceptions/cep-nao-encontrado-exception.dart';
 import '../models/localizacao.dart';
+
 
 import '../controllers/endereco-controller.dart';
 import '../exceptions/localizacao-nao-encontrada-exception.dart';
@@ -34,6 +38,58 @@ class _EnderecoViewState extends State<EnderecoView> {
   bool carregando = false;
 
   bool localizacaoindisponivel = false;
+
+   
+  Widget _construirLocalizacao() {
+    final double? latitude = double.tryParse(localizacao!.latitude);
+    final double? longetude = double.tryParse(localizacao!.longitude);
+ 
+    if (latitude == null || longetude == null) {
+      return Text('Localização Indisponivel');
+    }
+ 
+    final LatLng coordenada = LatLng(latitude, longetude);
+    return Container(
+      height: 220,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(width: 1),
+ 
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.25),
+            blurRadius: 8,
+            spreadRadius: 1,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: FlutterMap(
+          options: MapOptions(initialCenter: coordenada, initialZoom: 16),
+          children: [
+            TileLayer(
+              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              userAgentPackageName: 'br.com.senac.consultacep',
+            ),
+ 
+            MarkerLayer(
+              markers: [
+                Marker(
+                  point: coordenada,
+                  width: 50,
+                  height: 50,
+                  child: const Icon(Icons.location_on, size: 40),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+ 
 
   Future<void> consultarCEP() async {
     try {
@@ -103,7 +159,7 @@ class _EnderecoViewState extends State<EnderecoView> {
         centerTitle: true,
       ),
 
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
 
         child: Column(
@@ -280,7 +336,22 @@ class _EnderecoViewState extends State<EnderecoView> {
                   ],
                 ),
               ),
+              const SizedBox(height: 20),
+ 
+              if (!localizacaoindisponivel && localizacao != null)
+                _construirLocalizacao(),
+ 
+              const SizedBox(height: 20),
+ 
+              if (localizacaoindisponivel)
+                Text(
+                  'Localização indisponivel',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
             ],
+ 
+            const SizedBox(height: 36),
+
             //ERRO DE NAO ENCONTRADO
             if (mensagemErro != null) ...[
               const SizedBox(height: 24),

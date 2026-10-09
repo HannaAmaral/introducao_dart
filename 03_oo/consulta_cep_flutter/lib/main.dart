@@ -1,6 +1,6 @@
 import 'package:consulta_cep_flutter/views/endereco-view.dart';
 import 'package:flutter/material.dart';
-
+import 'package:consulta_cep_flutter/views/splash_view.dart';
 void main() {
   runApp(const ConsultaCepApp());
 }
@@ -24,7 +24,7 @@ class ConsultaCepApp extends StatelessWidget{
 
       debugShowCheckedModeBanner: false,
 
-      home: EnderecoView(),
+      home: const SplashView(),
       // home: Scaffold(
 
       //   appBar: AppBar(
